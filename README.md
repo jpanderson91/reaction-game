@@ -18,16 +18,6 @@
 
 ---
 
-## 🖼️ Screenshots
-
-> Drop screenshots into `docs/images/` and update the filenames below.
-
-| Incident Alert | Results / Scoreboard |
-|---|---|
-| ![Alert Screen](docs/images/screen-alert.png) | ![Results Screen](docs/images/screen-results.png) |
-
----
-
 ## 🚀 Why this project exists
 
 This is a *portfolio-quality* learning project that demonstrates:
