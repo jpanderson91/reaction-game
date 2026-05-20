@@ -10,7 +10,7 @@ from colorama import Fore, Back, Style, init
 from ui.ascii_art import print_banner
 from events.alerts import incidents
 from game.scoring import calculate_points
-from ui.animations import play_game_over, BURNING_DATACENTER_FRAMES
+from ui.animations import INCIDENT_ACTIVE_FRAMES, RESOLVE_SUCCESS_FRAMES, RESOLVE_FAILURE_FRAMES, play_result_screen, clear_screen, play_wait_screen, ENGINEER_DESK_FRAMES, play_game_over, BURNING_DATACENTER_FRAMES, play_start_screen, START_SCREEN_WITH_IMAGE_FRAMES
 from game.escalation import generate_problem, present_escalation
 
 #Variables to track timing
@@ -58,50 +58,64 @@ def show_start_screen(stats, first_run=True):
             return "exit"
 
 def play_round():
-    print("WAIT...")
+    print("Wait..")
     delay = random.uniform(2.0, 5.0)
-    elapsed = 0
     random_incident = random.choice(incidents)
     target_key = random.choice(string.ascii_lowercase)
-    while elapsed < delay:
-        key = get_single_key()
-        if key and ord(key) == 27:
-            print("\nCancelled. Returning to the start screen.")
-            return None, None
-        elapsed += 0.05
-    print(f"\n{random_incident['alert']} - Press '{target_key}' to resolve!")
+    wait_result = play_wait_screen(ENGINEER_DESK_FRAMES, delay, get_single_key)
+    if wait_result == "cancel":
+        return None, None
+    # after play_wait_screen returns, flush any buffered input
+    while get_single_key() is not None:
+        pass
     start_time = time.perf_counter()
     has_timer = random.random() < 0.3
     time_limit = random.uniform(3.0, 5.0) if has_timer else None
+    i = 0
     while True:
+        clear_screen()
+        print(INCIDENT_ACTIVE_FRAMES[i % len(INCIDENT_ACTIVE_FRAMES)])
+        print(f"\n{random_incident['alert']} - Press '{target_key}' to resolve!")
         if has_timer and (time.perf_counter() - start_time) > time_limit:
             return "escalation", random_incident
         key = get_single_key()
         if key is None:
-            continue
-        if key == target_key:
+            pass
+        elif key == target_key:
             return time.perf_counter() - start_time, random_incident
-        if ord(key) == 27:
-            print("\nCancelled. Returning to the start screen.")
+        elif ord(key) == 27:
             return None, None
         else:
-            print("Wrong key try again!")
-            print(random_incident["fail_art"])
             return "fail", random_incident
+        i += 1
+        for _ in range(4):
+            key = get_single_key()
+            if key == target_key:
+                return time.perf_counter() - start_time, random_incident
+            if key and ord(key) == 27:
+                return None, None
+            if key is not None:
+                return "fail", random_incident
             
 def main():
     stats = {"completed": 0, "total_time": 0.0, "best_time": None, "score": 0, "streak": 0, "lives": 3}
-    first_run = True
+    show_start = True
+    
     try:
         while True:
-            action = show_start_screen(stats, first_run)
-            first_run = False
-            if action == "exit":
-                break
+            if show_start:
+                action = play_start_screen(START_SCREEN_WITH_IMAGE_FRAMES, stats, get_single_key)
+                show_start = False
+                
+                if action == "exit":
+                    break
+
             result, incident = play_round()
             if result is None:
+                show_start = True
                 continue
             elif result == "fail":
+                play_result_screen(RESOLVE_FAILURE_FRAMES, "Wrong key!", get_single_key)
                 stats["streak"] = 0
                 stats["lives"] -= 1
                 if stats["lives"] <= 0:
@@ -112,33 +126,29 @@ def main():
                         stats["score"] = 0
                         stats["completed"] = 0
                         stats["total_time"] = 0.0
-                        stats["best_time"] = None  
+                        stats["best_time"] = None
+                        show_start = True
                     if choice == "quit":
                         break               
             elif result == "escalation":
-                # show problem to the player
                 problem, correct_answer = generate_problem(stats["completed"])
-                # get their input
                 user_input = present_escalation(problem, 60, get_single_key)
-                # compare input to correct answer
                 try:
                     if user_input is not None and int(user_input) == correct_answer:
-                        stats["score"] += 100 # bonus points
-                        stats["lives"] += 1 # gain a life
-                        stats["streak"] += 1 #increment streak
+                        stats["score"] += 100
+                        stats["lives"] += 1
+                        stats["streak"] += 1
                     else:
-                        stats["lives"] -= 1# lose a life
-                        stats["streak"] = 0# reset streak
+                        stats["lives"] -= 1
+                        stats["streak"] = 0
                 except ValueError:
-                    # they typed something that isn't a number
-                    stats["lives"] -= 1# lose a life
-                    stats["streak"] = 0# reset streak
+                    stats["lives"] -= 1
+                    stats["streak"] = 0
             else:
                 stats["completed"] += 1
                 stats["total_time"] += result
                 stats["best_time"] = result if stats["best_time"] is None else min(stats["best_time"], result)
-                print(incident['response'].format(time=result))
-                print(incident["success_art"])
+                play_result_screen(RESOLVE_SUCCESS_FRAMES, incident['response'].format(time=result), get_single_key)
                 stats["streak"] += 1
                 points = calculate_points(result, stats["streak"])
                 stats["score"] += points
