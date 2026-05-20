@@ -50,10 +50,10 @@ This is a *portfolio-quality* learning project that demonstrates:
 
 ## ✅ Features (planned + in progress)
 
-- [ ] One-round reaction timer (MVP)
-- [ ] Multiple incidents + randomized prompts
-- [ ] ANSI colors + ASCII banners
-- [ ] Multi-round sessions, streaks, best times
+- [x] One-round reaction timer (MVP)
+- [x] Multiple incidents + randomized prompts
+- [x] ANSI colors + ASCII banners
+- [x] Multi-round sessions, streaks, best times
 - [ ] Fake-outs (penalize early reactions)
 - [ ] Difficulty scaling
 - [ ] Persist high scores (optional)
@@ -63,20 +63,20 @@ This is a *portfolio-quality* learning project that demonstrates:
 ## 🧱 Roadmap (phased rubric)
 
 ### Phase 0 — Setup
-- [ ] Create project & run `python main.py`
-- [ ] Add dependencies (optional)
+- [x] Create project & run `python main.py`
+- [x] Add dependencies (optional)
 
 ### Phase 1 — MVP (vertical slice)
-- [ ] WAIT → random delay → GO → measure reaction time
+- [x] WAIT → random delay → GO → measure reaction time
 
 ### Phase 2 — Cloud theme
-- [ ] Alerts: CPU spike / PROD down / latency
+- [x] Alerts: CPU spike / PROD down / latency
 
 ### Phase 3 — Visual polish
-- [ ] Colors + ASCII art + screen clearing
+- [x] Colors + ASCII art + screen clearing
 
 ### Phase 4 — Game loop
-- [ ] Multi-round session + score tracking
+- [x] Multi-round session + score tracking
 
 ### Phase 5 — Mechanics
 - [ ] Fake-outs + penalties + streak system

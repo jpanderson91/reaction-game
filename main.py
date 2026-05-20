@@ -1,4 +1,5 @@
 import random
+import string
 import time
 import sys
 import tty
@@ -7,6 +8,7 @@ import select
 import pyfiglet
 from colorama import Fore, Back, Style, init
 from ui.ascii_art import print_banner
+from events.alerts import incidents
 
 #Variables to track timing
 
@@ -36,7 +38,7 @@ def show_start_screen(stats, first_run=True):
     if stats["completed"] > 0:
         average = stats["total_time"] / stats["completed"]
         print()
-        print(f"Rounds completed: {stats['completed']}")
+        print(f"Incidents Resolved: {stats['completed']}")
         print(f"Best time: {stats['best_time']:.4f}s")
         print(f"Average: {average:.4f}s")
         
@@ -53,23 +55,28 @@ def play_round():
     print("WAIT...")
     delay = random.uniform(2.0, 5.0)
     elapsed = 0
+    random_incident = random.choice(incidents)
+    target_key = random.choice(string.ascii_lowercase)
     while elapsed < delay:
         key = get_single_key()
         if key and ord(key) == 27:
             print("\nCancelled. Returning to the start screen.")
-            return None
+            return None, None
         elapsed += 0.05
-    print("\nGO")
+    print(f"\n{random_incident['alert']} - Press '{target_key}' to resolve!")
     start_time = time.perf_counter()
     while True:
         key = get_single_key()
         if key is None:
             continue
-        if key in ("\r", "\n"):
-            return time.perf_counter() - start_time
+        if key == target_key:
+            return time.perf_counter() - start_time, random_incident
         if ord(key) == 27:
             print("\nCancelled. Returning to the start screen.")
-            return None
+            return None, None
+        else:
+            print("Wrong key try again!")
+            print(random_incident["fail_art"])
 
 def main():
     stats = {"completed": 0, "total_time": 0.0, "best_time": None}
@@ -80,13 +87,14 @@ def main():
             first_run = False
             if action == "exit":
                 break
-            result = play_round()
+            result, incident = play_round()
             if result is None:
                 continue
             stats["completed"] += 1
             stats["total_time"] += result
             stats["best_time"] = result if stats["best_time"] is None else min(stats["best_time"], result)
-            print(f"Your reaction time is {result:.4f} seconds")
+            print(incident['response'].format(time=result))
+            print(incident["success_art"])
                     
     except KeyboardInterrupt:
     # Handle clean exit
