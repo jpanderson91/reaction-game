@@ -34,6 +34,11 @@ def play_start_screen(frames, stats, get_key_func):
             print(f"Score            : {stats['score']}")
             print(f"Streak           : {stats['streak']}")
             print(f"Lives            : {stats['lives']}")
+        if stats.get("highscores"):
+            print("--- HIGH SCORES ---")
+            for i, s in enumerate(stats["highscores"], 1):
+                print(f"  {i}. {s}")
+
         print("Press Enter to start, or ESC to exit.")
         key = get_key_func()
         if key in ("\r", "\n"):
@@ -81,6 +86,7 @@ def play_result_screen(frames, message, get_key_func):
             key = get_key_func()
             if key is not None:
                 return
+
 
 FRAME_1 = r"""
         (  .      )      .        (      .  )

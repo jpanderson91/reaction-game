@@ -12,13 +12,7 @@ from events.alerts import incidents
 from game.scoring import calculate_points
 from ui.animations import INCIDENT_ACTIVE_FRAMES, RESOLVE_SUCCESS_FRAMES, RESOLVE_FAILURE_FRAMES, play_result_screen, clear_screen, play_wait_screen, ENGINEER_DESK_FRAMES, play_game_over, BURNING_DATACENTER_FRAMES, play_start_screen, START_SCREEN_WITH_IMAGE_FRAMES
 from game.escalation import generate_problem, present_escalation
-
-#Variables to track timing
-
-
-
-# Add a simple main() that runs one round of WAIT
-# # -> random delay -> GO -> input -> elapsed time and prints the result
+from game.highscores import load_highscores, save_highscores
 
 
 
@@ -100,6 +94,8 @@ def play_round():
 def main():
     stats = {"completed": 0, "total_time": 0.0, "best_time": None, "score": 0, "streak": 0, "lives": 3}
     show_start = True
+    highscores = load_highscores()
+    stats["highscores"] = highscores
     
     try:
         while True:
@@ -120,6 +116,8 @@ def main():
                 stats["lives"] -= 1
                 if stats["lives"] <= 0:
                     choice = play_game_over(BURNING_DATACENTER_FRAMES, stats["score"], get_single_key)
+                    save_highscores(stats["score"])
+                    stats["highscores"] = load_highscores()
                     if choice == "new_game":
                         stats["streak"] = 0
                         stats["lives"] = 3   
