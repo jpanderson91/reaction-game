@@ -3,24 +3,15 @@ import operator
 import time
 
 def generate_problem(rounds_completed):
-    ops_simple = {
-        "+": operator.add,
-        "-": operator.sub
-    }
-    ops_medium = {
-        "*": operator.mul
-    }        
-    # determine difficulty based on rounds
+    ops_simple = {"+": operator.add, "-": operator.sub}
+    ops_medium = {"*": operator.mul}
     if rounds_completed < 10:
         num1 = random.randint(1, 5)
         num2 = random.randint(1, 5)
         symbol = random.choice(["+", "-"])
         answer = ops_simple[symbol](num1, num2)
         return f"{num1} {symbol} {num2}", answer
-       
-        
     elif rounds_completed < 20:
-         
         num1 = random.randint(1, 10)
         num2 = random.randint(1, 10)
         symbol = "*"
@@ -41,11 +32,6 @@ def present_escalation(problem, time_limit, get_key_func):
     print(f"⚠️ ESCALATION: Solve → {problem}")
     user_input = ""
     start = time.perf_counter()
-    # loop: check time, print countdown + input so far, read key
-    # Enter → return user_input
-    # backspace → remove last char
-    # digit or minus → append to user_input
-    # time expired → return None
     while True:
         remaining = time_limit - (time.perf_counter() - start)
         if remaining < 0:

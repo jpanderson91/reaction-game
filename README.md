@@ -12,9 +12,9 @@
 
 ## ✨ Demo
 
-> **Add a short GIF once you have a playable loop.**
 
-![Demo GIF](docs/images/demo.gif)
+
+![Demo GIF](docs/images/finished-game-loop-small.gif)
 
 ---
 
@@ -39,24 +39,31 @@ This is a *portfolio-quality* learning project that demonstrates:
 
 ---
 
-## 🎯 Gameplay (concept)
+## 🎯 Gameplay
 
-1. The game arms itself: `WAIT…`
-2. After a random delay, an incident fires: `🚨 PROD DOWN` / `🔥 CPU SPIKE` / `⏱️ LATENCY`
-3. You respond as fast as possible.
-4. Your reaction time, streak, and score are shown.
+1. An animated start screen displays with high scores and stats.
+2. An engineer sits at their desk (animated wait screen) while a random delay counts down.
+3. An incident fires with flashing alerts: `🚨 PROD DOWN` / `🔥 CPU SPIKE` / `⏱️ LATENCY`
+4. You must press the correct random key as fast as possible to resolve it.
+5. Success earns points (base + speed bonus + streak multiplier). Wrong key = lose a life.
+6. If you're too slow (30% chance), the incident escalates into a math problem you must solve.
+7. Solving the escalation earns bonus points and an extra life.
+8. Lose all 3 lives and it's game over — your score is saved to the leaderboard.
 
 ---
 
-## ✅ Features (planned + in progress)
+## ✅ Features
 
 - [x] One-round reaction timer (MVP)
 - [x] Multiple incidents + randomized prompts
 - [x] ANSI colors + ASCII banners
 - [x] Multi-round sessions, streaks, best times
-- [x] Fake-outs (penalize early reactions)
-- [x] Difficulty scaling
-- [ ] Persist high scores (optional)
+- [x] Escalation mechanic (math problems if too slow)
+- [x] Difficulty scaling (math problems get harder every 10 rounds)
+- [x] Lives system (3 lives, game over at 0)
+- [x] Scoring: base points + speed bonus + 3x streak multiplier
+- [x] Animated screens (start, wait, alert, success, fail, game over)
+- [x] Persist high scores (top 5 leaderboard)
 
 ---
 
@@ -82,10 +89,10 @@ This is a *portfolio-quality* learning project that demonstrates:
 - [x] Fake-outs + penalties + streak system
 
 ### Phase 6 — Polish
-- [ ] Log-style output, better UX pacing
+- [x] Animated screens for all game states (start, wait, alert, success, fail, game over)
 
-### Phase 7 — Persistence (optional)
-- [ ] Save/load highscores
+### Phase 7 — Persistence
+- [x] Save/load top 5 highscores to JSON
 
 ---
 
@@ -105,31 +112,27 @@ This is a *portfolio-quality* learning project that demonstrates:
 ## 📂 Project structure
 
 ```
-cloud-reaction-game/
+reaction-game/
 │
 ├── main.py
 ├── game/
-│   ├── loop.py
-│   ├── reaction.py
-│   └── scoring.py
+│   ├── scoring.py
+│   ├── escalation.py
+│   └── highscores.py
 ├── ui/
-│   ├── display.py
-│   ├── colors.py
-│   └── ascii_art.py
+│   ├── ascii_art.py
+│   ├── animations.py
+│   └── incident_art.py
 ├── events/
 │   └── alerts.py
-├── utils/
-│   ├── timer.py
-│   └── randomizer.py
+├── data/
+│   └── highscores.json
 ├── tests/
 │   └── test_smoke.py
 ├── docs/
 │   └── images/
-│       ├── demo.gif
-│       ├── screen-alert.png
-│       └── screen-results.png
+│       └── finished-game-loop-small.gif
 ├── requirements.txt
-├── requirements-dev.txt
 └── README.md
 ```
 

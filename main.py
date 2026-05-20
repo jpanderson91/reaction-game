@@ -5,9 +5,7 @@ import sys
 import tty
 import termios
 import select
-import pyfiglet
 from colorama import Fore, Back, Style, init
-from ui.ascii_art import print_banner
 from events.alerts import incidents
 from game.scoring import calculate_points
 from ui.animations import INCIDENT_ACTIVE_FRAMES, RESOLVE_SUCCESS_FRAMES, RESOLVE_FAILURE_FRAMES, play_result_screen, clear_screen, play_wait_screen, ENGINEER_DESK_FRAMES, play_game_over, BURNING_DATACENTER_FRAMES, play_start_screen, START_SCREEN_WITH_IMAGE_FRAMES
@@ -29,30 +27,7 @@ def get_single_key():
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, original_settings)
         
-def show_start_screen(stats, first_run=True):
-    if first_run:
-        print_banner()
-    if stats["completed"] > 0:
-        average = stats["total_time"] / stats["completed"]
-        print()
-        print(f"Incidents Resolved: {stats['completed']}")
-        print(f"Best time: {stats['best_time']:.4f}s")
-        print(f"Average: {average:.4f}s")
-    print(f"Score            : {stats['score']}")
-    print(f"Streak           : {stats['streak']}")
-    print(f"Lives            : {stats['lives']}")
-        
-    print()
-    print("Press Enter to start, or ESC to exit.")
-    while True:
-        key = get_single_key()
-        if key in ("\r", "\n"):
-            return "play"
-        if key and ord(key) == 27:
-            return "exit"
-
 def play_round():
-    print("Wait..")
     delay = random.uniform(2.0, 5.0)
     random_incident = random.choice(incidents)
     target_key = random.choice(string.ascii_lowercase)
@@ -152,20 +127,17 @@ def main():
                 stats["score"] += points
                     
     except KeyboardInterrupt:
-    # Handle clean exit
         completed = stats["completed"]
         average = stats["total_time"] / completed if completed > 0 else 0.0
         best_time = stats["best_time"]
-        score = stats["score"]
-        streak = stats["streak"]
-        lives = stats["lives"]
         print("\n\n--- Loop Summary ---")
         print(f"Total Iterations : {completed}")
-        print(f"Best Time        : {best_time:.4f} seconds")
+        if best_time is not None:
+            print(f"Best Time        : {best_time:.4f} seconds")
         print(f"Average Time     : {average:.4f} seconds")
-        print(f"Score            : {score}")
-        print(f"Streak           : {streak}")
-        print(f"Lives            : {lives}")
+        print(f"Score            : {stats['score']}")
+        print(f"Streak           : {stats['streak']}")
+        print(f"Lives            : {stats['lives']}")
         print("--------------------")
     
 if __name__ == "__main__":
