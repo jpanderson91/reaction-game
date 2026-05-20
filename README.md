@@ -54,8 +54,8 @@ This is a *portfolio-quality* learning project that demonstrates:
 - [x] Multiple incidents + randomized prompts
 - [x] ANSI colors + ASCII banners
 - [x] Multi-round sessions, streaks, best times
-- [ ] Fake-outs (penalize early reactions)
-- [ ] Difficulty scaling
+- [x] Fake-outs (penalize early reactions)
+- [x] Difficulty scaling
 - [ ] Persist high scores (optional)
 
 ---
@@ -79,7 +79,7 @@ This is a *portfolio-quality* learning project that demonstrates:
 - [x] Multi-round session + score tracking
 
 ### Phase 5 — Mechanics
-- [ ] Fake-outs + penalties + streak system
+- [x] Fake-outs + penalties + streak system
 
 ### Phase 6 — Polish
 - [ ] Log-style output, better UX pacing
